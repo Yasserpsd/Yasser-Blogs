@@ -1,1 +1,244 @@
+/* ======= Yasser Blogs Grid ======= */
+.yasser-blogs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin: 30px 0;
+    direction: rtl;
+}
 
+.yasser-blogs-grid[data-columns="2"] { grid-template-columns: repeat(2, 1fr); }
+.yasser-blogs-grid[data-columns="4"] { grid-template-columns: repeat(4, 1fr); }
+.yasser-blogs-grid[data-columns="1"] { grid-template-columns: 1fr; }
+
+@media (max-width: 992px) {
+    .yasser-blogs-grid,
+    .yasser-blogs-grid[data-columns] { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+}
+@media (max-width: 600px) {
+    .yasser-blogs-grid,
+    .yasser-blogs-grid[data-columns] { grid-template-columns: 1fr; }
+}
+
+/* ======= Blog Card ======= */
+.yasser-blog-card {
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.yasser-blog-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* ======= Thumbnail ======= */
+.yasser-blog-thumb {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.yasser-blog-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+    display: block;
+}
+
+.yasser-blog-card:hover .yasser-blog-thumb img {
+    transform: scale(1.08);
+}
+
+.yasser-blog-no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+/* ======= Share Overlay ======= */
+.yasser-share-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.65) 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 18px;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.yasser-blog-card:hover .yasser-share-overlay,
+.yasser-blog-card:focus-within .yasser-share-overlay {
+    opacity: 1;
+}
+
+.yasser-share-buttons {
+    display: flex;
+    gap: 10px;
+    transform: translateY(15px);
+    transition: transform 0.4s ease;
+}
+
+.yasser-blog-card:hover .yasser-share-buttons {
+    transform: translateY(0);
+}
+
+.yasser-share-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+    padding: 0;
+}
+
+.yasser-share-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.yasser-share-btn:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.yasser-share-btn.yasser-whatsapp:hover { background: #25D366; color: #fff; }
+.yasser-share-btn.yasser-linkedin:hover { background: #0077B5; color: #fff; }
+.yasser-share-btn.yasser-x:hover        { background: #000000; color: #fff; }
+.yasser-share-btn.yasser-copy:hover     { background: #667eea; color: #fff; }
+
+.yasser-share-btn.copied {
+    background: #10b981 !important;
+    color: #fff !important;
+}
+
+/* ======= Card Content ======= */
+.yasser-blog-content {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.yasser-blog-category {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    width: fit-content;
+}
+
+.yasser-blog-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.5;
+    margin: 0 0 12px;
+    color: #1a1a1a;
+}
+
+.yasser-blog-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.yasser-blog-title a:hover {
+    color: #667eea;
+}
+
+.yasser-blog-excerpt {
+    color: #666;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    margin: 0 0 18px;
+    flex-grow: 1;
+}
+
+.yasser-blog-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid #eee;
+    font-size: 0.85rem;
+}
+
+.yasser-blog-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #888;
+}
+
+.yasser-blog-readmore {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 0.3s ease;
+}
+
+.yasser-blog-readmore:hover {
+    gap: 10px;
+    color: #764ba2;
+}
+
+.yasser-blogs-empty {
+    text-align: center;
+    padding: 40px;
+    color: #888;
+    font-size: 1.1rem;
+}
+
+/* ======= Toast Notification ======= */
+.yasser-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #10b981;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: 99999;
+    pointer-events: none;
+}
+
+.yasser-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
