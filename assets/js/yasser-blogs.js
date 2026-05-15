@@ -3,8 +3,15 @@
 
     document.addEventListener('DOMContentLoaded', function () {
 
-        // التعامل مع زرار نسخ الرابط
-        document.querySelectorAll('.yasser-copy').forEach(function (btn) {
+        // ===== منع أزرار المشاركة من فتح المقالة =====
+        document.querySelectorAll('.yasser-share-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+        });
+
+        // ===== زرار نسخ الرابط (في البطاقات + شريط المقالة) =====
+        document.querySelectorAll('.yasser-copy, .yasser-single-copy').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -64,6 +71,21 @@
                 toast.classList.remove('show');
                 setTimeout(function () { toast.remove(); }, 400);
             }, 2500);
+        }
+
+        // ===== إظهار/إخفاء شريط المشاركة في المقالة عند السكرول =====
+        var shareBar = document.querySelector('.yasser-single-share-bar');
+        if (shareBar) {
+            var lastScroll = 0;
+            window.addEventListener('scroll', function () {
+                var currentScroll = window.pageYOffset;
+                if (currentScroll > 300) {
+                    shareBar.classList.add('visible');
+                } else {
+                    shareBar.classList.remove('visible');
+                }
+                lastScroll = currentScroll;
+            });
         }
     });
 })();
