@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Yasser Blogs
  * Plugin URI:        https://momentummix.com/
- * Description:       عرض المقالات بشكل شيك في شبكة 3 أعمدة مع أزرار مشاركة على واتساب، لينكدإن، X، ونسخ الرابط، بالإضافة لشريط مشاركة عائم داخل المقالة.
- * Version:           1.1.0
+ * Description:       عرض المقالات بشكل شيك في شبكة 3 أعمدة مع أزرار مشاركة على واتساب، لينكدإن، X، ونسخ الرابط، بالإضافة لشريط مشاركة عائم ثابت داخل المقالة.
+ * Version:           1.2.0
  * Author:            Yasser Momentum
  * Author URI:        https://momentummix.com/
  * License:           GPL v3 or later
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'YASSER_BLOGS_VERSION', '1.1.0' );
+define( 'YASSER_BLOGS_VERSION', '1.2.0' );
 define( 'YASSER_BLOGS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'YASSER_BLOGS_URL', plugin_dir_url( __FILE__ ) );
 
@@ -84,16 +84,27 @@ function yasser_blogs_get_share_buttons( $post_url, $post_title, $prefix = '' ) 
  */
 function yasser_blogs_shortcode( $atts ) {
     $atts = shortcode_atts( array(
-        'posts'    => 6,
+        'posts'    => -1, // الافتراضي: عرض كل المقالات
         'columns'  => 3,
         'category' => '',
         'orderby'  => 'date',
         'order'    => 'DESC',
     ), $atts, 'yasser_blogs' );
 
+    // دعم -1 أو "all" لعرض كل المقالات
+    $posts_value = $atts['posts'];
+    if ( is_string( $posts_value ) && strtolower( $posts_value ) === 'all' ) {
+        $posts_per_page = -1;
+    } else {
+        $posts_per_page = intval( $posts_value );
+        if ( $posts_per_page === 0 ) {
+            $posts_per_page = -1;
+        }
+    }
+
     $args = array(
         'post_type'      => 'post',
-        'posts_per_page' => intval( $atts['posts'] ),
+        'posts_per_page' => $posts_per_page,
         'orderby'        => sanitize_text_field( $atts['orderby'] ),
         'order'          => sanitize_text_field( $atts['order'] ),
         'post_status'    => 'publish',
@@ -169,13 +180,24 @@ function yasser_blogs_shortcode( $atts ) {
 add_shortcode( 'yasser_blogs', 'yasser_blogs_shortcode' );
 
 /**
- * إضافة شريط المشاركة العائم داخل صفحة المقالة (Single Post)
+ * إضافة شريط المشاركة العائم الثابت + الشريط العادي داخل صفحة المقالة (Single Post)
  */
 function yasser_blogs_single_share_bar( $content ) {
     if ( is_singular( 'post' ) && in_the_loop() && is_main_query() ) {
         $post_url   = get_permalink();
         $post_title = get_the_title();
 
+        // 1) شريط المشاركة العائم الثابت (Sticky/Floating)
+        ob_start();
+        ?>
+        <div class="yasser-floating-share" aria-label="<?php esc_attr_e( 'مشاركة المقالة', 'yasser-blogs' ); ?>">
+            <span class="yasser-floating-share-title"><?php esc_html_e( 'شارك', 'yasser-blogs' ); ?></span>
+            <?php echo yasser_blogs_get_share_buttons( $post_url, $post_title, 'single-' ); ?>
+        </div>
+        <?php
+        $floating_bar = ob_get_clean();
+
+        // 2) شريط المشاركة العادي في آخر المقالة
         ob_start();
         ?>
         <div class="yasser-single-share-bar">
@@ -191,7 +213,9 @@ function yasser_blogs_single_share_bar( $content ) {
         </div>
         <?php
         $share_bar = ob_get_clean();
-        $content  .= $share_bar;
+
+        // نضيف العائم في الأول ثم محتوى المقالة ثم الشريط العادي
+        $content = $floating_bar . $content . $share_bar;
     }
     return $content;
 }
