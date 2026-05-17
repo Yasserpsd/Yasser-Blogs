@@ -77,7 +77,7 @@
     background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
-/* ======= Share Overlay - مهم: pointer-events:none عشان مايبلوكش الكليك ======= */
+/* ======= Share Overlay ======= */
 .yasser-share-overlay {
     position: absolute;
     inset: 0;
@@ -88,7 +88,7 @@
     padding: 18px;
     opacity: 0;
     transition: opacity 0.35s ease;
-    pointer-events: none; /* ← السحر هنا: الـ overlay مايستقبلش كليك */
+    pointer-events: none;
     z-index: 2;
 }
 
@@ -101,7 +101,7 @@
     gap: 10px;
     transform: translateY(15px);
     transition: transform 0.4s ease;
-    pointer-events: auto; /* ← لكن الأزرار نفسها بتستقبل كليك */
+    pointer-events: auto;
 }
 
 .yasser-blog-card:hover .yasser-share-buttons {
@@ -310,6 +310,65 @@
     .yasser-single-share-inner {
         justify-content: center;
         text-align: center;
+    }
+}
+
+/* ======= Floating Sticky Share Bar (شريط مشاركة عائم ثابت) ======= */
+.yasser-floating-share {
+    position: fixed;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 10px;
+    background: #ffffff;
+    border-radius: 50px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    z-index: 9999;
+    align-items: center;
+}
+
+.yasser-floating-share-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 4px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    letter-spacing: 1px;
+}
+
+.yasser-floating-share .single-yasser-share-btn {
+    width: 40px;
+    height: 40px;
+    background: #f5f7ff;
+    box-shadow: none;
+    border: 1px solid #e6e9f5;
+}
+
+.yasser-floating-share .single-yasser-share-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* في الموبايل: شريط أفقي تحت الشاشة بدل الجنب */
+@media (max-width: 768px) {
+    .yasser-floating-share {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        transform: none;
+        flex-direction: row;
+        justify-content: center;
+        border-radius: 16px 16px 0 0;
+        padding: 10px;
+        gap: 8px;
+    }
+    .yasser-floating-share-title {
+        display: none;
     }
 }
 
