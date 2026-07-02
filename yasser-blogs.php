@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Yasser Blogs
  * Plugin URI:        https://momentummix.com/
- * Description:       عرض المقالات بشكل شيك في شبكة 3 أعمدة مع أزرار مشاركة على واتساب، لينكدإن، X، ونسخ الرابط، بالإضافة لشريط مشاركة عائم ثابت داخل المقالة.
- * Version:           1.2.0
+ * Description:       عرض المقالات بشكل شيك في شبكة 3 أعمدة مع أزرار مشاركة على واتساب، لينكدإن، X، ونسخ الرابط، بالإضافة لشريط مشاركة عائم ثابت داخل المقالة + تاريخ مخصص لكل مقال.
+ * Version:           1.3.0
  * Author:            Yasser Momentum
  * Author URI:        https://momentummix.com/
  * License:           GPL v3 or later
@@ -15,9 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'YASSER_BLOGS_VERSION', '1.2.0' );
+define( 'YASSER_BLOGS_VERSION', '1.3.0' );
 define( 'YASSER_BLOGS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'YASSER_BLOGS_URL', plugin_dir_url( __FILE__ ) );
+
+// تحميل موديول التاريخ المخصص
+require_once YASSER_BLOGS_PATH . 'yasser-blogs-custom-date.php';
 
 /**
  * تحميل ملفات CSS و JS
@@ -159,7 +162,7 @@ function yasser_blogs_shortcode( $atts ) {
                         <div class="yasser-blog-meta">
                             <span class="yasser-blog-date">
                                 <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-                                <?php echo esc_html( get_the_date() ); ?>
+                                <?php echo esc_html( yasser_blogs_get_display_date() ); ?>
                             </span>
                             <a href="<?php echo esc_url( $post_url ); ?>" class="yasser-blog-readmore">
                                 <?php esc_html_e( 'اقرأ المزيد', 'yasser-blogs' ); ?>
@@ -178,6 +181,32 @@ function yasser_blogs_shortcode( $atts ) {
     return ob_get_clean();
 }
 add_shortcode( 'yasser_blogs', 'yasser_blogs_shortcode' );
+
+/**
+ * عرض التاريخ المخصص فوق محتوى المقالة المنفردة (Single Post)
+ */
+function yasser_blogs_single_custom_date( $content ) {
+    if ( is_singular( 'post' ) && in_the_loop() && is_main_query() ) {
+        $custom_date_raw = get_post_meta( get_the_ID(), '_yasser_custom_date', true );
+
+        // نعرض الشارة فقط لو المستخدم حدد تاريخ مخصص
+        if ( ! empty( $custom_date_raw ) ) {
+            $display_date = yasser_blogs_get_display_date();
+
+            ob_start();
+            ?>
+            <div class="yasser-single-custom-date">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+                <span><?php echo esc_html( $display_date ); ?></span>
+            </div>
+            <?php
+            $date_badge = ob_get_clean();
+            $content = $date_badge . $content;
+        }
+    }
+    return $content;
+}
+add_filter( 'the_content', 'yasser_blogs_single_custom_date', 5 ); // أولوية 5 عشان تظهر قبل شريط المشاركة
 
 /**
  * إضافة شريط المشاركة العائم الثابت + الشريط العادي داخل صفحة المقالة (Single Post)
