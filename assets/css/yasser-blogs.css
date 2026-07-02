@@ -394,3 +394,30 @@
     opacity: 1;
     transform: translateX(-50%) translateY(0);
 }
+
+/* ======= Single Post Custom Date Badge ======= */
+.yasser-single-custom-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+    color: #667eea;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 20px;
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    direction: rtl;
+}
+
+.yasser-single-custom-date svg {
+    flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+    .yasser-single-custom-date {
+        font-size: 0.82rem;
+        padding: 6px 14px;
+    }
+}
